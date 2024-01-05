@@ -33,3 +33,35 @@ exports.categoryDetails=async(req,res)=>{
     }
     res.send(category)
 }
+
+//to update category
+exports.updateCategory=async(req,res)=>{
+    const category= await Category.findByIdAndUpdate(
+        req.params.id,
+        {
+            category_name:req.body.category_name
+        },
+        {new:true}
+    )
+    if(!category){
+        return res.status(400).json({error:'Someting went wrong'})
+    }
+    res.send(category)
+}
+
+//to delete category
+exports.deleteCategory=(req,res)=>{
+    Category.findByIdAndDelete(req.params.id)
+    .then(category=>{
+        if(!category){
+        return res.status(404).json({error:'category with that id is not found'})
+    }
+    else{
+        return res.status(200).json({message:'category deleted'})
+    }
+    })
+    .catch(err=>{
+        return res.status(400).json({error:err})
+    })
+    
+}
