@@ -11,6 +11,7 @@ const productRoute=require('./routes/productRoute')
 //middleware
 app.use(morgan('dev'))
 app.use(bodyParser.json()) //to read the json data
+app.use('/public/uploads',express.static('public/uploads'))
 
 //routes
 app.use('/api',categoryRoute)
