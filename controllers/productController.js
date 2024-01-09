@@ -20,6 +20,7 @@ exports.postProduct=async(req,res)=>{
 //to get data of all product
 exports.productList=async(req,res)=>{
     const product =await Product.find()
+    .populate('category','category_name')
     if (!product){
         return res.status(400).json({error:'Something went wrong'})
     }
@@ -29,6 +30,7 @@ exports.productList=async(req,res)=>{
 //to get individual data of product
 exports.productDetail=async(req,res)=>{
     const product =await Product.findById(req.params.id)
+    .populate('category','category_name')
     if(!product){
         return res.status(400).json({error:'Something went wrong'})
     }
@@ -46,7 +48,8 @@ exports.updateProduct=async(req,res)=>{
             product_description: req.body.product_description,
             product_image: req.body.product_image,
             category:req.body.category
-        }
+        },
+        {new:true}
     )
     if(!product){
         return res.status(400).json({error:'Something went wrong'})
