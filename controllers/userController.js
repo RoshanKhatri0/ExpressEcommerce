@@ -134,3 +134,100 @@ exports.forgetPassword = async (req, res) => {
     })
     res.json({message:'password reset link has been sent successfully '})
 }
+
+//reset password
+exports.resetPassword=async(req,res)=>{
+    // find the valid token
+    let token = await Token.findOne({token:req.params.token})
+    if (!token) {
+        return res.status(400).json({ error: 'invalid token or token may have expiredd' })
+    }
+    // if we found the vald token then find the valid user for that token   
+    let user = await User.findOne({_id:token.userId})
+    if (!user) {
+        return res.status(400).json({ error: 'we are unable to find the valid user for this token' })
+    }
+    // reset the password
+    user.password=req.body.password
+    user= await user.save()
+    if (!user) {
+        return res.status(500).json({ error: 'failed to reset password' })
+    }
+    res.json({message:'password has been reset successfully, login to continue'})
+}
+
+//user list
+exports.userList=async(req,res)=>{
+    const user = await User.find()
+    .select('-hashed_password')//- to remove from list
+    .select('-salt')
+    if (!user) {
+        return res.status(500).json({ error: 'something went wrong' })
+    }
+    res.send(user)
+}
+
+// user details
+exports.userDetails=async(req,res)=>{
+    const user = await User.findById(req.params.id)
+    .select('-hashed_password')//- to remove from list
+    .select('-salt')
+    if (!user) {
+        return res.status(500).json({ error: 'something went wrong' })
+    }
+    res.send(user)
+}
+
+//signout
+exports.signOut=(req,res)=>{
+    res.clearCookie('myCookie')
+    res.json({message:'signout successful'})
+}
+
+//require signin
+exports.requireSignin=expressjwt({
+    secret:process.env.JWT_SECRET,
+    algorithms:['HS256']
+})
+
+// middleware for user role
+exports.requireUser=(req,res,next)=>{
+    //verify JWT
+    expressjwt({
+        secret:process.env.JWT_SECRET,
+        algorithms:['HS256']
+    })(req,res,(err)=>{
+        if (err){
+            return res.status(400).json({error:'Unauthorized'})
+        }
+        // check the role
+        if(req.user.role===0){
+            // grant access
+            next()
+        } else{
+            //unauthorized role
+            return res.status(403).json({error:'Forbidden'})
+        }
+    })
+}
+
+// middleware for admin role
+exports.requireAdmin=(req,res,next)=>{
+    //verify JWT
+    expressjwt({
+        secret:process.env.JWT_SECRET,
+        algorithms:['HS256']
+    })(req,res,(err)=>{
+        if (err){
+            return res.status(400).json({error:'Unauthorized'})
+        }
+        // check the role
+        if(req.user.role===1){
+            // grant access
+            next()
+        } else{
+            //unauthorized role
+            return res.status(403).json({error:'Forbidden'})
+        }
+    })
+}
