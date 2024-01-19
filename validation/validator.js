@@ -18,6 +18,22 @@ exports.productValidation=[
 
 ]
 
+exports.userValidation=[
+    check('name','name is required').notEmpty()
+    .isLength({min:3}).withMessage('name must be atleast 3 characters'),
+    check('email','email is required').notEmpty()
+    .isEmail().withMessage('email format incorrect'),
+]
+
+exports.passwordValidation=[
+    check('password','password is mandatory').notEmpty()
+    .matches(/[a-z]/).withMessage('password must contain one lowercase character')
+    .matches(/[A-Z]/).withMessage('password must contain one uppercase character')
+    .matches(/[0-9]/).withMessage('password must contain one numeric character')
+    .matches(/[@#$_?!]/).withMessage('password must contain special character')
+    .isLength({min:8}).withMessage('password must be of minimun 8 characters')
+]
+
 exports.validation=(req,res,next)=>{
     const errors=validationResult(req)
     if(errors.isEmpty()){
