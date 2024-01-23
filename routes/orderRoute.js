@@ -8,5 +8,4 @@ router.get('/orderdetails/:id',orderDetails)
 router.put('/updatestatus/:id',updateStatus)
 router.get('/userorders/:userid',userOrders)
 
-
 module.exports=router
