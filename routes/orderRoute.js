@@ -6,6 +6,6 @@ router.post('/postorder',postOrder)
 router.get('/orderlist',orderList)
 router.get('/orderdetails/:id',orderDetails)
 router.put('/updatestatus/:id',updateStatus)
-router.get('/userorders/:userid',userOrders)
+router.get('/userorders/:userId',userOrders)
 
 module.exports=router
