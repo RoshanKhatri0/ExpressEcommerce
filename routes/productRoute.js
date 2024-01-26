@@ -8,7 +8,7 @@ const { requireSignin, requireAdmin } = require('../controllers/userController')
 
 router.post('/postproduct',requireSignin,requireAdmin,upload.single('product_image'),productValidation,validation,postProduct)
 router.get('/productlist',productList)
-router.get('/productdetail/:id',productDetail)
+router.get('/productdetails/:id',productDetail)
 router.put('/productupdate/:id',requireSignin,requireAdmin,upload.single('product_image'),productValidation,validation,updateProduct)
 router.delete('/productdelete/:id',requireSignin,requireAdmin,deleteProduct)
 
